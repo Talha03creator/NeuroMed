@@ -3,7 +3,7 @@ from google import genai
 from google.genai import types
 
 async def main():
-    client = genai.Client(api_key='AIzaSyAqLN8uyRCZfT3uLV0W_HqfWdaBh341G1k')
+    client = genai.Client(api_key='AIzaSyCjFMDZY1z9xd5ogCePJ2SzZPVOOZH0VoE')
     try:
         print("Testing async call via client.aio.models.generate_content...")
         response = await client.aio.models.generate_content(

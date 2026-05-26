@@ -1,143 +1,121 @@
+"""
+Main Application Entrypoint
+Agentic Clinical Intelligence Platform
 
+Initializes FastAPI, configures CORS, mounts routers, and defines
+the Global Exception Handler linked to the DevSecOps Agent.
+"""
+
+import uuid
 import logging
-import sys
-import os
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, FileResponse
-from fastapi.staticfiles import StaticFiles
-
-
-# Force UTF-8 on Windows console to avoid emoji encoding crashes
-# Guard: only on Windows AND only when stdout has a .buffer (not in serverless)
-if sys.platform == "win32" and hasattr(sys.stdout, "buffer"):
-    import io
-    try:
-        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
-    except Exception:
-        pass  # Serverless or CI environment — skip safely
+from fastapi.responses import JSONResponse
 
 from app.core.config import settings
-from app.core.logging_config import configure_logging
-from app.database.session import init_db
-from app.api.middleware.rate_limiter import RateLimitMiddleware
+from app.database.session import init_db, AsyncSessionLocal
+from app.agents.devsecops_agent import devsecops_agent
 from app.api.middleware.logging_middleware import LoggingMiddleware
-from app.api.routes import reports, health
-from app.services.ai_service import ai_service
+from app.api.middleware.rate_limiter import RateLimitMiddleware
 
+# API Routers
+from app.api.routes import health
+from app.api.routes import analyze
+from app.api.routes import chat
+from app.api.routes import export
 
-configure_logging()
-logger = logging.getLogger(__name__)
+# Configure Logging
+logging.basicConfig(
+    level=logging.INFO if not settings.debug else logging.DEBUG,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger("healthtech_ai")
 
-
-# -- Lifespan (startup/shutdown) -----------------------------------------------
+# ── Lifespan Manager ──────────────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Application lifecycle management."""
-    logger.info(f"Starting {settings.app_name} v{settings.app_version}")
-    logger.info(f"  Environment: {settings.app_env}")
-    logger.info(f"  AI Model:    {settings.ai_model}")
-
-    # Validate AI API key at startup
-    try:
-        settings.get_ai_api_key()
-        logger.info("  AI API key: configured")
-    except ValueError as e:
-        logger.warning(f"  AI API key WARNING: {e}")
-
-    # Initialize database tables (auto-create in dev mode)
-    try:
-        await init_db()
-        logger.info("  Database: initialized")
-    except Exception as e:
-        logger.warning(f"  Database WARNING: {e}")
-
-    logger.info(f"  {settings.app_name} is ready at http://localhost:{settings.port}")
+    """Lifecycle events for the FastAPI application."""
+    logger.info("Starting Agentic Clinical Intelligence Platform...")
+    
+    # Initialize the database and ensure all tables exist
+    await init_db()
+    
     yield
-
-    # Cleanup
-    logger.info("Shutting down...")
-    await ai_service.close()
-    logger.info("Shutdown complete.")
+    
+    logger.info("Shutting down platform services...")
 
 
-# -- FastAPI App ---------------------------------------------------------------
+# ── App Initialization ────────────────────────────────────────────────
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
-    description=(
-        "AI-powered medical transcription analysis system. "
-        "Extracts structured entities, classifies medical specialty, "
-        "detects risk factors, and generates professional summaries.\n\n"
-        "**DISCLAIMER:** This system is for informational purposes only "
-        "and does not provide medical diagnosis."
-    ),
-    docs_url="/docs",
-    redoc_url="/redoc",
-    openapi_url="/openapi.json",
+    description="Agentic Clinical Intelligence Platform - Hackathon Demo",
     lifespan=lifespan,
+    docs_url="/api/docs",
+    redoc_url="/api/redoc"
 )
 
-# -- Middleware (outermost first) ----------------------------------------------
+# ── Middleware Configuration ──────────────────────────────────────────
+# CORS - Allowing all for hackathon environment
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins_list,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Custom Middlewares
 app.add_middleware(LoggingMiddleware)
 app.add_middleware(RateLimitMiddleware)
 
-# -- Routes -------------------------------------------------------------------
-app.include_router(health.router)
-app.include_router(reports.router)
 
-
-# -- Global Exception Handler -------------------------------------------------
+# ── Global Exception Handler ──────────────────────────────────────────
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    logger.error(f"Unhandled exception: {exc}", exc_info=True)
+    """
+    Catch all unhandled exceptions, trigger the DevSecOps agent to
+    create a GitLab incident, and return a clean 500 response.
+    """
+    request_id = getattr(request.state, "request_id", str(uuid.uuid4())[:8])
+    logger.error(f"Global unhandled exception [{request_id}]: {exc}")
+    
+    # Build context for DevSecOps Agent
+    error_ctx = devsecops_agent.build_error_context(
+        exception=exc,
+        request_id=request_id,
+        endpoint=request.url.path,
+        failed_step="global_exception_handler",
+        agent_name="system_monitor"
+    )
+    
+    # Fire off DevSecOps incident logic
+    try:
+        async with AsyncSessionLocal() as db:
+            await devsecops_agent.handle_system_exception(error_context=error_ctx, db=db)
+    except Exception as devsecops_exc:
+        logger.error(f"DevSecOps Agent failed during exception handling: {devsecops_exc}")
+        
     return JSONResponse(
         status_code=500,
         content={
-            "error": "Internal server error",
-            "detail": str(exc) if settings.debug else "An unexpected error occurred",
-            "disclaimer": settings.disclaimer,
-        },
+            "error": "Internal Server Error",
+            "message": "A critical system error occurred. Our DevSecOps AI has been notified and an incident has been automatically created.",
+            "request_id": request_id,
+            "disclaimer": settings.disclaimer
+        }
     )
 
 
-# -- Frontend Static Files ----------------------------------------------------
-frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
-if os.path.exists(frontend_dir):
-    app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
+# ── Router Registration ───────────────────────────────────────────────
+app.include_router(health.router)
+app.include_router(analyze.router)
+app.include_router(chat.router)
+app.include_router(export.router)
 
-    @app.get("/", include_in_schema=False)
-    async def serve_frontend():
-        return FileResponse(os.path.join(frontend_dir, "index.html"))
-
-
-# -- Root API Info ------------------------------------------------------------
-@app.get("/api", include_in_schema=False)
-async def api_info():
-    return {
-        "name": settings.app_name,
-        "version": settings.app_version,
-        "disclaimer": settings.disclaimer,
-        "docs": "/docs",
-        "health": "/api/v1/health",
-    }
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(
-        "app.main:app",
-        host=settings.host,
-        port=settings.port,
-        reload=not settings.is_production(),
-        log_level=settings.log_level.lower(),
-    )
+@app.get("/")
+async def root():
+    """Root endpoint verifying API is alive."""
+    return {"message": "Agentic Clinical Intelligence Platform API is running.", "version": settings.app_version}

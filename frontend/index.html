@@ -1,424 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description"
-    content="AI Medical Report Analyzer - Professional medical transcription analysis with intelligent entity extraction. Non-diagnostic informational tool." />
-  <title>MedAnalyze AI — Medical Report Analyzer</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="/static/style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Clinical Intelligence</title>
+    
+    <!-- Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css?v=5">
+    <link rel="stylesheet" href="css/animations.css?v=4">
 </head>
-
 <body>
-  <!-- Animated Background -->
-  <div class="bg-orbs">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-  </div>
+    <!-- Background Particles / Ambience -->
+    <div class="ambient-bg"></div>
 
-  <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo">
-        <div class="logo-icon">
-          <svg viewBox="0 0 40 40" fill="none">
-            <rect width="40" height="40" rx="12" fill="url(#lg1)" />
-            <path d="M20 10v20M10 20h20" stroke="#fff" stroke-width="3" stroke-linecap="round" />
-            <circle cx="20" cy="20" r="5" fill="#fff" opacity="0.3" />
-            <defs>
-              <linearGradient id="lg1" x1="0" y1="0" x2="40" y2="40">
-                <stop offset="0%" stop-color="#6366f1" />
-                <stop offset="100%" stop-color="#06b6d4" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <div class="logo-text">
-          <span class="logo-name">MedAnalyze</span>
-          <span class="logo-tag">AI System</span>
-        </div>
-      </div>
-    </div>
-
-    <nav class="sidebar-nav">
-      <button class="nav-item active" data-section="upload" aria-label="Upload Report">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
-        </svg>
-        <span>Upload</span>
-      </button>
-      <button class="nav-item" data-section="results" aria-label="View Results">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 17H7A5 5 0 017 7h2M15 7h2a5 5 0 010 10h-2M8 12h8" />
-        </svg>
-        <span>Results</span>
-      </button>
-      <button class="nav-item" data-section="history" aria-label="History">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
-        </svg>
-        <span>History</span>
-      </button>
-      <button class="nav-item" data-section="docs" aria-label="API Docs">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-          <polyline points="14 2 14 8 20 8" />
-          <line x1="16" y1="13" x2="8" y2="13" />
-          <line x1="16" y1="17" x2="8" y2="17" />
-          <polyline points="10 9 9 9 8 9" />
-        </svg>
-        <span>API Docs</span>
-      </button>
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="system-status" id="systemStatus">
-        <div class="status-dot"></div>
-        <span>Checking...</span>
-      </div>
-      <a href="https://www.linkedin.com/in/muhammad-talha-6278463a1" target="_blank" rel="noopener noreferrer"
-        class="linkedin-btn">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path
-            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-        </svg>
-        Connect on LinkedIn
-      </a>
-      <p class="disclaimer-mini">Non-diagnostic · Informational only</p>
-    </div>
-  </aside>
-
-  <!-- Hamburger for mobile -->
-  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-    <span></span><span></span><span></span>
-  </button>
-
-  <!-- Main Content -->
-  <main class="main-content">
     <!-- Header -->
-    <header class="page-header">
-      <div class="header-left">
-        <h1 id="pageTitle">Upload Medical Report</h1>
-        <p id="pageSubtitle">AI-powered entity extraction · Non-diagnostic</p>
-      </div>
-      <div class="header-right">
-        <div class="disclaimer-badge">
-          <svg viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd"
-              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-              clip-rule="evenodd" />
-          </svg>
-          Informational Only · Not a Diagnostic Tool
+    <header class="navbar">
+        <div class="logo-container">
+            <div class="logo-icon"></div>
+            <h1>Agentic<span>Clinical</span></h1>
         </div>
-      </div>
+        <nav>
+            <a href="#" class="active">Dashboard</a>
+            <a href="#">Observability</a>
+            <a href="#">Settings</a>
+        </nav>
+        <div class="user-profile">
+            <div class="avatar">Dr</div>
+        </div>
     </header>
 
-    <!-- ── SECTION: Upload ── -->
-    <section class="section active" id="section-upload">
-      <div class="upload-grid">
-        <!-- Drop Zone -->
-        <div class="glass-card upload-card" id="uploadCard">
-          <div class="upload-zone" id="dropZone">
-            <div class="upload-icon-wrapper">
-              <div class="upload-icon-ring"></div>
-              <svg class="upload-icon" viewBox="0 0 64 64" fill="none">
-                <circle cx="32" cy="32" r="28" fill="url(#upload-bg)" opacity="0.15" />
-                <path d="M32 40V24M24 32l8-8 8 8" stroke="url(#upload-stroke)" stroke-width="3" stroke-linecap="round"
-                  stroke-linejoin="round" />
-                <path d="M20 44h24" stroke="url(#upload-stroke)" stroke-width="2" stroke-linecap="round" />
-                <defs>
-                  <linearGradient id="upload-bg" x1="4" y1="4" x2="60" y2="60">
-                    <stop offset="0%" stop-color="#6366f1" />
-                    <stop offset="100%" stop-color="#06b6d4" />
-                  </linearGradient>
-                  <linearGradient id="upload-stroke" x1="20" y1="24" x2="44" y2="44">
-                    <stop offset="0%" stop-color="#818cf8" />
-                    <stop offset="100%" stop-color="#22d3ee" />
-                  </linearGradient>
-                </defs>
-              </svg>
+    <main class="container">
+        <!-- Upload Dashboard -->
+        <section id="upload-section" class="upload-dashboard">
+            <div class="header-text">
+                <h2>Clinical Analysis Intelligence</h2>
+                <p>Upload a medical report (TXT or PDF) for autonomous agentic reasoning.</p>
             </div>
-            <h3 class="upload-title">Drop your medical report here</h3>
-            <p class="upload-sub">Supports <code>.TXT</code> and <code>.PDF</code> files up to 10MB</p>
-            <button class="btn btn-primary" id="browseBtn">
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-              </svg>
-              Browse File
+            
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </div>
+                <h3>Drag & Drop Report</h3>
+                <p>or click to browse local files</p>
+                <input type="file" id="file-input" accept=".txt,.pdf" hidden>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <section id="loading-section" class="hidden">
+            <div class="processing-card">
+                <div class="ai-pulse"></div>
+                <h3>Agentic Pipeline Active</h3>
+                <p id="loading-status">Orchestrator is extracting entities...</p>
+                
+                <!-- Skeleton representation -->
+                <div class="skeleton-container">
+                    <div class="skeleton-bar"></div>
+                    <div class="skeleton-bar" style="width: 80%;"></div>
+                    <div class="skeleton-bar" style="width: 60%;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Grid -->
+        <section id="results-section" class="hidden">
+            <div class="results-header">
+                <h2>Analysis Complete</h2>
+                <div class="badges">
+                    <span id="badge-specialty" class="badge badge-primary">Specialty</span>
+                    <span id="badge-risk" class="badge badge-warning">Risk</span>
+                </div>
+            </div>
+
+            <div id="dashboard-container" class="dashboard-container">
+                <div class="medical-card fade-in-up" style="animation-delay: 0.1s;">
+                    <h3>🩺 Executive Clinical Summary</h3>
+                    <p id="summary-content">Processing...</p>
+                </div>
+
+                <div class="medical-card fade-in-up" style="animation-delay: 0.2s;">
+                    <h3>🧬 Extracted Biomarkers & Vitals</h3>
+                    <div id="biomarkers-content" class="markdown-table-container">Processing...</div>
+                </div>
+
+                <div class="medical-card fade-in-up" style="animation-delay: 0.3s;">
+                    <h3>⚠️ Critical Risk Flags</h3>
+                    <div id="risks-content">Processing...</div>
+                </div>
+
+                <div class="medical-card fade-in-up" style="animation-delay: 0.4s;">
+                    <h3>📋 Recommended Next Steps</h3>
+                    <div id="suggestions-content">Processing...</div>
+                </div>
+                
+                <div class="medical-card fade-in-up" style="animation-delay: 0.5s;">
+                    <h3>⏱️ Agent Reasoning Timeline</h3>
+                    <ul id="timeline-content" style="list-style: none; padding: 0;">Processing...</ul>
+                </div>
+
+                <div class="medical-card fade-in-up" style="animation-delay: 0.6s;">
+                    <h3>🏥 Fivetran EHR Context</h3>
+                    <pre id="ehr-content" style="background:#f1f5f9; padding: 10px; border-radius: 8px;">Processing...</pre>
+                </div>
+
+                <div class="medical-card fade-in-up" style="animation-delay: 0.7s;" id="gitlab-card">
+                    <h3>🚨 GitLab Escalation Panel</h3>
+                    <div id="incident-content">Processing...</div>
+                </div>
+
+                <div class="medical-card fade-in-up" style="animation-delay: 0.9s;">
+                    <h3>⚡ AI Observability</h3>
+                    <ul>
+                        <li><strong>Confidence Score:</strong> <span id="confidence-score">--</span></li>
+                        <li><strong>Self-Healing:</strong> <span class="status-safe">Active via Arize Phoenix</span></li>
+                        <li><strong>Actions Generated:</strong> <span id="actions-content">--</span></li>
+                    </ul>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button id="export-pdf-btn" class="upload-btn" style="padding: 8px 16px; font-size: 14px; display: none;">📄 Export PDF</button>
+                        <button id="export-json-btn" class="upload-btn" style="padding: 8px 16px; font-size: 14px; background: #333; display: none;">📊 Export JSON</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating Chat Widget -->
+    <div id="chat-widget" class="chat-widget hidden">
+        <div class="chat-header">
+            <div class="chat-title">
+                <div class="status-indicator online"></div>
+                <span>Agentic Assistant</span>
+            </div>
+            <button id="chat-toggle-btn" class="icon-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </button>
-            <input type="file" id="fileInput" accept=".txt,.pdf" hidden />
-          </div>
-
-          <!-- Selected File Preview -->
-          <div class="file-preview" id="filePreview" hidden>
-            <div class="file-info">
-              <div class="file-icon" id="fileIconType">📄</div>
-              <div class="file-details">
-                <span class="file-name" id="previewFileName"></span>
-                <span class="file-size" id="previewFileSize"></span>
-              </div>
-              <button class="file-remove" id="fileRemoveBtn" aria-label="Remove file">✕</button>
-            </div>
-            <button class="btn btn-success btn-full" id="analyzeBtn">
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-              </svg>
-              Analyze with AI
+        </div>
+        <div id="chat-body" class="chat-body">
+            <!-- Messages injected here -->
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Ask about the report...">
+            <button id="chat-send-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
             </button>
-          </div>
         </div>
+    </div>
 
-        <!-- Info Cards -->
-        <div class="info-cards">
-          <div class="glass-card info-card tilt-card">
-            <div class="info-card-icon" style="--accent: #6366f1">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
-            </div>
-            <h4>Entity Extraction</h4>
-            <p>Symptoms, medications, procedures, lab values and more</p>
-          </div>
-          <div class="glass-card info-card tilt-card">
-            <div class="info-card-icon" style="--accent: #06b6d4">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-            </div>
-            <h4>Specialty Classification</h4>
-            <p>Automatically identifies the relevant medical specialty</p>
-          </div>
-          <div class="glass-card info-card tilt-card">
-            <div class="info-card-icon" style="--accent: #f59e0b">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                <line x1="12" y1="9" x2="12" y2="13" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
-            </div>
-            <h4>Risk Detection</h4>
-            <p>Flags critical keywords and high-priority findings</p>
-          </div>
-          <div class="glass-card info-card tilt-card">
-            <div class="info-card-icon" style="--accent: #10b981">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M23 21v-2a4 4 0 00-3-3.87" />
-                <path d="M16 3.13a4 4 0 010 7.75" />
-              </svg>
-            </div>
-            <h4>Dual Summary</h4>
-            <p>Professional & patient-friendly explanations generated</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Progress Bar -->
-      <div class="progress-container" id="progressContainer" hidden>
-        <div class="glass-card progress-card">
-          <div class="progress-header">
-            <span class="progress-label" id="progressLabel">Extracting text...</span>
-            <span class="progress-percent" id="progressPercent">0%</span>
-          </div>
-          <div class="progress-track">
-            <div class="progress-bar" id="progressBar"></div>
-          </div>
-          <div class="progress-steps">
-            <span class="step" id="step1">📄 Reading file</span>
-            <span class="step" id="step2">🧠 AI Analysis</span>
-            <span class="step" id="step3">💾 Saving result</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── SECTION: Results ── -->
-    <section class="section" id="section-results">
-      <div class="results-empty" id="resultsEmpty">
-        <div class="empty-icon">🔬</div>
-        <h3>No Analysis Yet</h3>
-        <p>Upload a medical report to see the structured analysis here.</p>
-        <button class="btn btn-primary" onclick="switchSection('upload')">Upload Report</button>
-      </div>
-
-      <div class="results-content" id="resultsContent" hidden>
-        <!-- Disclaimer Banner -->
-        <div class="disclaimer-banner">
-          <svg viewBox="0 0 20 20" fill="currentColor" class="disclaimer-icon">
-            <path fill-rule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-              clip-rule="evenodd" />
-          </svg>
-          <strong>Disclaimer:</strong> This system is for informational purposes only and does not provide medical
-          diagnosis.
-        </div>
-
-        <!-- Stats Row -->
-        <div class="stats-row" id="statsRow"></div>
-
-        <!-- Risk Flags -->
-        <div class="risk-container" id="riskContainer" hidden>
-          <div class="glass-card risk-card">
-            <h3 class="card-title risk-title">
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                  clip-rule="evenodd" />
-              </svg>
-              Risk Flags Detected
-            </h3>
-            <div class="risk-flags" id="riskFlags"></div>
-          </div>
-        </div>
-
-        <!-- Entity Grid -->
-        <div class="entity-grid" id="entityGrid"></div>
-
-        <!-- Summary Cards -->
-        <div class="summary-grid" id="summaryGrid"></div>
-
-        <!-- Export Button -->
-        <div class="export-row">
-          <button class="btn btn-export" id="exportBtn">
-            <svg viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                clip-rule="evenodd" />
-            </svg>
-            Export JSON
-          </button>
-          <button class="btn btn-outline" id="newAnalysisBtn">
-            <svg viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-                clip-rule="evenodd" />
-            </svg>
-            New Analysis
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── SECTION: History ── -->
-    <section class="section" id="section-history">
-      <div class="glass-card history-card">
-        <div class="history-header">
-          <h2>Analysis History</h2>
-          <button class="btn btn-sm btn-outline" id="refreshHistoryBtn">
-            <svg viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-                clip-rule="evenodd" />
-            </svg>
-            Refresh
-          </button>
-        </div>
-        <div class="table-container">
-          <table class="history-table" id="historyTable">
-            <thead>
-              <tr>
-                <th>Filename</th>
-                <th>Specialty</th>
-                <th>Status</th>
-                <th>Confidence</th>
-                <th>Risk Flags</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="historyBody">
-              <tr>
-                <td colspan="7" class="table-empty">Loading history...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="pagination" id="pagination"></div>
-      </div>
-    </section>
-
-    <!-- ── SECTION: API Docs ── -->
-    <section class="section" id="section-docs">
-      <div class="glass-card docs-card">
-        <h2 class="card-title">API Documentation</h2>
-        <p class="docs-intro">Full interactive documentation available at <a href="/docs" target="_blank"
-            class="docs-link">/docs</a> (Swagger UI) and <a href="/redoc" target="_blank" class="docs-link">/redoc</a>
-          (ReDoc).</p>
-
-        <div class="endpoints">
-          <div class="endpoint">
-            <div class="endpoint-header">
-              <span class="method post">POST</span>
-              <code>/api/v1/reports/upload</code>
-            </div>
-            <p>Upload and analyze a medical transcription (TXT/PDF)</p>
-            <pre class="code-block">curl -X POST http://localhost:8000/api/v1/reports/upload \
-  -F "file=@report.txt"</pre>
-          </div>
-
-          <div class="endpoint">
-            <div class="endpoint-header">
-              <span class="method get">GET</span>
-              <code>/api/v1/reports</code>
-            </div>
-            <p>List all analysis history (paginated)</p>
-            <pre class="code-block">curl http://localhost:8000/api/v1/reports?page=1&per_page=20</pre>
-          </div>
-
-          <div class="endpoint">
-            <div class="endpoint-header">
-              <span class="method get">GET</span>
-              <code>/api/v1/reports/{id}</code>
-            </div>
-            <p>Get full analysis for a specific report</p>
-            <pre class="code-block">curl http://localhost:8000/api/v1/reports/{report-uuid}</pre>
-          </div>
-
-          <div class="endpoint">
-            <div class="endpoint-header">
-              <span class="method get">GET</span>
-              <code>/api/v1/reports/{id}/export</code>
-            </div>
-            <p>Download analysis as JSON file</p>
-            <pre class="code-block">curl -O http://localhost:8000/api/v1/reports/{id}/export</pre>
-          </div>
-
-          <div class="endpoint">
-            <div class="endpoint-header">
-              <span class="method get">GET</span>
-              <code>/api/v1/health</code>
-            </div>
-            <p>System health check (database, cache status)</p>
-            <pre class="code-block">curl http://localhost:8000/api/v1/health</pre>
-          </div>
-        </div>
-      </div>
-      <div class="disclaimer-banner" style="margin-top: 1rem;">
-        <svg viewBox="0 0 20 20" fill="currentColor" class="disclaimer-icon">
-          <path fill-rule="evenodd"
-            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-            clip-rule="evenodd" />
-        </svg>
-        This system is for informational purposes only and does not provide medical diagnosis.
-      </div>
-    </section>
-  </main>
-
-  <!-- Toast Container -->
-  <div class="toast-container" id="toastContainer"></div>
-
-  <script src="/static/app.js"></script>
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/app_v2.js?v=final_demo"></script>
+    <script src="js/websocket.js"></script>
 </body>
-
 </html>

@@ -1,245 +1,67 @@
-# AI Medical Report Analyzer
+# NeuroMed: Agentic Clinical Intelligence Platform by Growthstack.dev
 
-> **Disclaimer:** This system is for informational purposes only and does not provide medical diagnosis.
+![NeuroMed Dashboard](https://img.shields.io/badge/Status-Hackathon_Ready-success?style=for-the-badge) ![Gemini 1.5 Pro](https://img.shields.io/badge/Powered_by-Gemini_1.5_Pro-blue?style=for-the-badge)
 
-A production-ready AI-powered medical transcription analysis system built with FastAPI, PostgreSQL, and a glassmorphism frontend.
+NeuroMed is an autonomous Agentic Reasoning Engine designed to fundamentally transform how clinicians interact with unstructured medical data. Built for the Google Cloud Rapid Agent Hackathon, this platform ensures clinical safety, automated tool execution, and transparent observability.
 
----
+## 🩺 The Problem & Solution
 
-## Features
+**The Problem:** 
+Modern healthcare systems generate massive volumes of unstructured clinical text. Manual chart review is prone to human error, cognitive overload, and delayed diagnosis, especially when reconciling real-time pathology reports with deeply buried historical Electronic Health Records (EHR).
 
-| Feature | Details |
-|---------|---------|
-| 📄 **File Upload** | TXT and PDF support (up to 10MB) |
-| 🧠 **AI Analysis** | Google Gemini 2.5 Flash via Gemini API |
-| 🔬 **Entity Extraction** | Symptoms, medications, procedures, lab values, body parts |
-| 🏥 **Specialty Classification** | AI + rule-based fallback |
-| ⚠️ **Risk Detection** | High-priority clinical keyword flagging |
-| 📝 **Dual Summaries** | Professional + patient-friendly |
-| 🎯 **Confidence Score** | 0–100% analysis confidence |
-| 💾 **History** | PostgreSQL persistence + paginated view |
-| 📊 **Export** | Download full analysis as JSON |
-| 🔒 **Security** | Rate limiting, CORS, file validation |
-| ⚡ **Caching** | Redis cache + in-memory fallback |
-| 🐳 **Docker** | Full containerized deployment |
+**The Solution:** 
+NeuroMed is not a simple chatbot. It is a deterministic, multi-agent orchestration platform. It ingests complex clinical reports, natively interfaces with Model Context Protocol (MCP) tools to dynamically pull historical EHR data, identifies critical contradictions, and automates downstream actions—such as escalating critical risks directly to clinical review boards. It prioritizes zero-hallucination structured outputs, clinical safety, and absolute observability.
 
----
+## 🧠 Agentic Architecture (Powered by Gemini 1.5 Pro & Vertex AI)
 
-## Quick Start
+Our architecture abandons legacy linear RAG pipelines in favor of a robust, self-correcting multi-agent framework:
 
-### 1. Clone & Configure
+- **Context Agent:** Dynamically parses unstructured medical text to extract core entity identifiers (e.g., Patient IDs, Biomarkers).
+- **Orchestrator Agent:** The central intelligence powered by **Gemini 1.5 Pro**. It evaluates extracted data, autonomously decides when to invoke external tools, and synthesizes a deeply explainable structured clinical summary.
+- **Critic Agent (Self-Healing Loop):** A supervisory AI that critiques the Orchestrator's logic before the response reaches the user. If logic gaps or missing data are detected, the system autonomously executes a self-healing retry loop to correct itself.
 
-```bash
-git clone <your-repo>
-cd "HealthTech system"
-cp .env.example .env
-```
+## 🔗 MCP Integrations (Fivetran EHR & GitLab Escalations)
 
-Edit `.env` and set your API key:
-```
-MEDICAL_AI_API_KEY=your-openai-api-key-here
-```
+NeuroMed natively integrates with Model Context Protocol (MCP) standard tools for real-world enterprise impact:
 
-### 2. Install Dependencies
+- **Fivetran EHR Integration:** The Agent autonomously fetches a patient's historical records when a new report is uploaded, actively comparing new diagnoses with historical medications to prevent dangerous contradictions.
+- **GitLab Incident Escalation:** When critical neurological or cardiovascular risks are identified, the Agent autonomously opens a GitLab incident ticket for immediate "human-in-the-loop" clinical review.
 
-```bash
-python -m pip install -r requirements.txt
-```
+## 📊 Observability & Self-Healing (Arize Phoenix)
 
-### 3. Start PostgreSQL (local)
+- **Deterministic Structured Output:** We guarantee pristine JSON responses using strict Pydantic model validation and native Python parsing, eliminating fragile LLM markdown rendering.
+- **Agentic Telemetry:** Deep integration with Arize Phoenix tracks every reasoning step, token usage, tool invocation, and confidence score. This provides hospital administrators with a transparent "glass-box" view into the AI's decision-making process.
 
-```bash
-# Using Docker
-docker run -d --name medanalyze_db \
-  -e POSTGRES_PASSWORD=password \
-  -e POSTGRES_DB=medical_analyzer \
-  -p 5432:5432 postgres:16-alpine
-```
+## 💻 Local Setup Instructions
 
-### 4. Run the Application
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/Talha03creator/NeuroMed.git
+   cd NeuroMed
+   ```
 
-```bash
-python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-```
+2. **Install Dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-Open: **http://localhost:8000**  
-Swagger API Docs: **http://localhost:8000/docs**
+3. **Environment Setup:**
+   Create a `.env` file in the root directory (use `.env.example` as a template) and add your API keys:
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key_here
+   AI_MODEL=gemini-1.5-pro
+   ```
 
----
+4. **Run the Backend (FastAPI):**
+   ```bash
+   python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+   ```
 
-## Docker Deployment
+5. **Run the Frontend:**
+   Open a new terminal and start a local HTTP server for the dashboard:
+   ```bash
+   python -m http.server 3000 -d frontend
+   ```
 
-```bash
-# Copy and configure environment
-cp .env.example .env
-# Edit .env with your MEDICAL_AI_API_KEY
-
-# Build and start all services
-docker compose up -d --build
-
-# Check logs
-docker compose logs -f app
-
-# Run database migrations
-docker compose exec app alembic upgrade head
-```
-
-Services:
-- **App:** http://localhost:8000
-- **PostgreSQL:** localhost:5432
-- **Redis:** localhost:6379
-
----
-
-## Database Migrations
-
-```bash
-# Run all migrations
-alembic upgrade head
-
-# Create new migration
-alembic revision --autogenerate -m "description"
-
-# Rollback one step
-alembic downgrade -1
-```
-
----
-
-## API Reference
-
-### Upload & Analyze
-
-```bash
-curl -X POST http://localhost:8000/api/v1/reports/upload \
-  -F "file=@report.txt"
-```
-
-### List History
-
-```bash
-curl "http://localhost:8000/api/v1/reports?page=1&per_page=20"
-```
-
-### Get Report
-
-```bash
-curl http://localhost:8000/api/v1/reports/{report-uuid}
-```
-
-### Export JSON
-
-```bash
-curl -O http://localhost:8000/api/v1/reports/{report-uuid}/export
-```
-
-### Health Check
-
-```bash
-curl http://localhost:8000/api/v1/health
-```
-
----
-
-## Project Structure
-
-```
-HealthTech system/
-├── app/
-│   ├── main.py                     # FastAPI entry point
-│   ├── api/
-│   │   ├── routes/
-│   │   │   ├── reports.py          # Report CRUD endpoints
-│   │   │   └── health.py           # Health check
-│   │   └── middleware/
-│   │       ├── rate_limiter.py     # Sliding window rate limit
-│   │       └── logging_middleware.py
-│   ├── services/
-│   │   ├── ai_service.py           # LLM integration + retry
-│   │   ├── extraction_service.py   # Analysis orchestration
-│   │   ├── classification_service.py # Specialty + risk detection
-│   │   └── cache_service.py        # Redis cache
-│   ├── models/
-│   │   └── report.py               # SQLAlchemy ORM model
-│   ├── schemas/
-│   │   └── report.py               # Pydantic request/response schemas
-│   ├── database/
-│   │   └── session.py              # Async SQLAlchemy engine
-│   ├── core/
-│   │   ├── config.py               # Centralized settings (Pydantic)
-│   │   └── logging_config.py
-│   └── utils/
-│       ├── file_handler.py         # PDF/TXT text extraction
-│       └── text_chunker.py         # Document chunking strategy
-├── frontend/
-│   ├── index.html                  # Glassmorphism dashboard
-│   ├── style.css                   # 3D effects, animations, dark mode
-│   └── app.js                      # Vanilla JS Fetch API
-├── alembic/                        # Database migrations
-├── scripts/
-│   └── preprocess_kaggle.py        # Kaggle dataset preprocessor
-├── Dockerfile                      # Multi-stage production build
-├── docker-compose.yml              # Full stack deployment
-├── requirements.txt
-└── .env.example
-```
-
----
-
-## Kaggle Dataset
-
-To preprocess the [Medical Transcriptions dataset](https://www.kaggle.com/datasets/tboyle10/medicaltranscriptions):
-
-```bash
-# 1. Download mtsamples.csv from Kaggle
-# 2. Place in scripts/data/mtsamples.csv
-# 3. Run:
-python scripts/preprocess_kaggle.py
-
-# Output: scripts/data/cleaned_transcriptions.csv
-#         scripts/data/sample_reports/ (TXT files for testing upload)
-```
-
----
-
-## Environment Variables
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `MEDICAL_AI_API_KEY` | ✅ Yes | — | OpenAI (or compatible) API key |
-| `DATABASE_URL` | ✅ Yes | — | PostgreSQL async connection URL |
-| `AI_MODEL` | No | `gpt-4o-mini` | LLM model to use |
-| `AI_TEMPERATURE` | No | `0.2` | AI response temperature |
-| `REDIS_ENABLED` | No | `false` | Enable Redis caching |
-| `REDIS_URL` | No | `redis://localhost:6379/0` | Redis connection URL |
-| `RATE_LIMIT_REQUESTS` | No | `5` | Max requests per window |
-| `RATE_LIMIT_WINDOW` | No | `60` | Rate limit window (seconds) |
-| `MAX_FILE_SIZE_MB` | No | `10` | Maximum upload file size |
-| `LOG_LEVEL` | No | `INFO` | Logging verbosity |
-
----
-
-## Security
-
-- ✅ API key never hardcoded — loaded from environment only
-- ✅ File type and size validation before processing
-- ✅ Rate limiting (5 req/60s per IP)
-- ✅ CORS configured per environment
-- ✅ Non-root Docker user
-- ✅ Input sanitization (HTML escaping in frontend)
-- ✅ Structured error responses (no stack traces in production)
-
----
-
-## Author
-
-**Muhammad Talha**  
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://www.linkedin.com/in/muhammad-talha-6278463a1)
-
----
-
-## License
-
-MIT License — For educational and informational use only.
-
-> **Medical Disclaimer:** This system is for informational purposes only and does not provide medical diagnosis. Always consult a qualified healthcare professional for medical advice.
+6. **Access the Dashboard:**
+   Open your browser and navigate to `http://localhost:3000`. Upload a clinical report to see the Agent in action!

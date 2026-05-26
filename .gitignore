@@ -27,3 +27,8 @@ Thumbs.db
 
 # Docker (not needed in Vercel)
 docker-compose.override.yml
+
+# Virtual Environments
+venv/
+env/
+.venv/

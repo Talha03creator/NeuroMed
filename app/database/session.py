@@ -1,6 +1,6 @@
 """
 Database Configuration & Session Management
-AI Medical Report Analyzer
+Agentic Clinical Intelligence Platform
 
 Async SQLAlchemy setup - supports both PostgreSQL and SQLite.
 Serverless-compatible: uses NullPool for non-SQLite to avoid stale connections.
@@ -12,7 +12,6 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
 )
 from sqlalchemy.pool import NullPool, StaticPool
-from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import text
 from typing import AsyncGenerator
 import logging
@@ -20,6 +19,9 @@ import logging
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
+
+# ── Re-export Base from models ─────────────────────────────────────
+from app.models.base import Base  # noqa: F401 — used by Alembic and init_db
 
 # ── Detect DB type ─────────────────────────────────────────────────
 _is_sqlite = settings.database_url.startswith("sqlite")
@@ -61,12 +63,6 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 
-# ── Base Model ─────────────────────────────────────────────────────
-class Base(DeclarativeBase):
-    """Base class for all SQLAlchemy ORM models."""
-    pass
-
-
 # ── Dependency ─────────────────────────────────────────────────────
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
@@ -96,9 +92,25 @@ async def check_database_connection() -> bool:
         return False
 
 
+import asyncio
+
 # ── Table Initialization ───────────────────────────────────────────
 async def init_db() -> None:
-    """Create all tables if they don't exist."""
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    logger.info("Database tables initialized")
+    """Create all tables if they don't exist, with connection retry logic."""
+    # Import all models to ensure they're registered with Base
+    import app.models  # noqa: F401
+
+    retries = 5
+    for i in range(retries):
+        try:
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+            logger.info("✅ Database connection successful! Tables initialized (%d tables)", len(Base.metadata.tables))
+            break
+        except Exception as e:
+            if i < retries - 1:
+                logger.warning(f"⚠️ Database not ready. Retrying in 3 seconds... ({i+1}/{retries})")
+                await asyncio.sleep(3)
+            else:
+                logger.error(f"❌ Failed to connect to database after {retries} retries: {e}")
+                raise e

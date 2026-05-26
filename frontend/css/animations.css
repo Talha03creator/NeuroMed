@@ -1,0 +1,115 @@
+/* 
+  Animations & Micro-interactions — Neon-Clinical White Theme
+  Agentic Clinical Intelligence Platform
+*/
+
+/* Processing Card Container */
+.processing-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 3rem 2rem;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: var(--shadow-elevated);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--neon-blue);
+}
+
+.processing-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+
+.processing-card p {
+    color: var(--text-slate);
+    margin-bottom: 2rem;
+}
+
+/* AI Pulse Ring — Neon Blue Glow */
+.ai-pulse {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, var(--neon-blue), #6366f1);
+    border-radius: 50%;
+    margin: 0 auto 1.5rem auto;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+}
+
+.ai-pulse::before,
+.ai-pulse::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 50%;
+    border: 2px solid var(--neon-blue);
+    animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+.ai-pulse::after {
+    animation-delay: 1s;
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* Skeleton Loading Bars */
+.skeleton-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.skeleton-bar {
+    height: 12px;
+    width: 100%;
+    background: var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+.skeleton-bar::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(90deg, rgba(0, 212, 255, 0) 0%, rgba(0, 212, 255, 0.15) 50%, rgba(0, 212, 255, 0) 100%);
+    animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Chat Typing Indicator */
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 0.5rem 1rem;
+    background: var(--bg-card);
+    border-radius: 12px;
+    width: fit-content;
+    border: 1px solid var(--border-color);
+}
+
+.typing-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--neon-blue);
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+    0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+    40% { transform: scale(1); opacity: 1; }
+}
