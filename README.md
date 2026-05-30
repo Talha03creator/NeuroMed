@@ -4,6 +4,8 @@
 
 NeuroMed is an autonomous Agentic Reasoning Engine designed to fundamentally transform how clinicians interact with unstructured medical data. Built for the Google Cloud Rapid Agent Hackathon, this platform ensures clinical safety, automated tool execution, and transparent observability.
 
+
+
 ## 🩺 The Problem & Solution
 
 **The Problem:** 
