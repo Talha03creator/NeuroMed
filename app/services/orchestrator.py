@@ -85,10 +85,10 @@ class NeuroMedOrchestrator:
         USE_MOCK_MODE = True  # Emergency switch for Hackathon Demo
         if USE_MOCK_MODE:
             return {
-                "executive_summary": "Patient NMG-8842 exhibits clear signs of early-stage Parkinsonian symptoms and chronic microvascular ischemia. Immediate neurological referral is advised.",
+                "executive_summary": "Patient exhibits severe neurological degradation consistent with advanced Parkinsonian traits. Fivetran historical EHR confirms a contradiction with newly prescribed dopamine antagonists.",
                 "extracted_biomarkers": "| Metric | Value |\n|---|---|\n| Age | 58 |\n| LDL | 160 mg/dL |",
-                "critical_risks": "High risk of neurological decline; cardiovascular comorbidities present.",
-                "recommended_next_steps": "Initiate Levodopa, Neuro follow-up.",
+                "critical_risks": "- High Fall Risk\n- Medication Contradiction (EHR)\n- Neurological Decline",
+                "recommended_next_steps": "- Initiate Levodopa protocol immediately.\n- Schedule emergency Neurology board review.\n- Create GitLab Escalation Ticket.",
                 "reasoning_timeline": [
                     {"step": "EHR Context", "thought": "Fivetran successfully retrieved patient history."},
                     {"step": "Entity Extraction", "thought": "Identified Parkinsonian traits."},

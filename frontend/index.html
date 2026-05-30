@@ -133,6 +133,87 @@
 
             </div>
         </section>
+        
+        <!-- Observability Section -->
+        <section id="observability-section" class="hidden">
+            <div class="results-header" style="margin-bottom: 24px;">
+                <h2>AI Observability Settings</h2>
+                <div class="badges">
+                    <span class="badge badge-primary" style="background: linear-gradient(135deg, var(--neon-blue), #0284C7); color: white; padding: 6px 12px; border-radius: 9999px; font-size: 0.8rem; font-weight: 600;">Arize Phoenix</span>
+                    <span class="badge badge-success" style="background: rgba(16, 185, 129, 0.1); color: var(--safe-green); border: 1px solid rgba(16, 185, 129, 0.2); padding: 6px 12px; border-radius: 9999px; font-size: 0.8rem; font-weight: 600;">Telemetry Live</span>
+                </div>
+            </div>
+
+            <div class="dashboard-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <!-- Left panel: Settings toggles -->
+                <div class="medical-card" style="border-left: 6px solid var(--neon-blue);">
+                    <h3>⚙️ Telemetry Controls</h3>
+                    <p style="color: var(--text-slate); margin-bottom: 20px; font-size: 0.95rem;">Configure real-time agentic trace exports and self-healing parameters.</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <!-- Toggle 1 -->
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <strong style="font-size: 0.95rem; color: var(--text-main); display: block; margin-bottom: 2px;">Enable Arize Phoenix LLM Tracing</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); display: block; line-height: 1.3;">Stream full execution spans to local telemetry port</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-arize-tracing" checked>
+                                <span class="slider-switch"></span>
+                            </label>
+                        </div>
+
+                        <!-- Toggle 2 -->
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <strong style="font-size: 0.95rem; color: var(--text-main); display: block; margin-bottom: 2px;">Critic Agent Self-Healing Loop</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); display: block; line-height: 1.3;">Enable multi-turn correction when validation falls below threshold</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-critic-loop" checked>
+                                <span class="slider-switch"></span>
+                            </label>
+                        </div>
+
+                        <!-- Toggle 3 -->
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <strong style="font-size: 0.95rem; color: var(--text-main); display: block; margin-bottom: 2px;">Fivetran EHR Data Sync Logging</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); display: block; line-height: 1.3;">Log detailed pipeline telemetry during patient context matching</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-fivetran-sync" checked>
+                                <span class="slider-switch"></span>
+                            </label>
+                        </div>
+
+                        <!-- Slider -->
+                        <div style="margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <strong style="font-size: 0.95rem; color: var(--text-main);">Critic Confidence Threshold</strong>
+                                <span id="critic-threshold-value" style="font-size: 0.95rem; font-weight: 600; color: #0284C7;">85%</span>
+                            </div>
+                            <input type="range" id="slider-critic-threshold" min="0" max="100" value="85" style="width: 100%; accent-color: var(--neon-blue); height: 6px; border-radius: 4px; cursor: pointer;">
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px;">Pipeline will automatically trigger healing iterations below this score</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right panel: Terminal logs -->
+                <div class="medical-card" style="border-left: 6px solid #0284C7;">
+                    <h3>🖥️ Live Telemetry Terminal</h3>
+                    <p style="color: var(--text-slate); margin-bottom: 20px; font-size: 0.95rem;">Real-time traces from Vertex AI, Fivetran EHR connector, and Critic agent.</p>
+                    
+                    <div id="telemetry-console" style="background: #0F172A; font-family: monospace; font-size: 0.85rem; padding: 20px; border-radius: 12px; border: 1px solid #1E293B; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); color: #E2E8F0; line-height: 1.8; height: 260px; overflow-y: auto;">
+                        <div style="color: var(--neon-green); font-weight: bold;">[SYSTEM] Connecting to Arize Phoenix... OK</div>
+                        <div style="color: #38BDF8;">[TRACE] ID: 9x8b-4m2q | Model: gemini-1.5-pro | Latency: 1.2s</div>
+                        <div style="color: #FBBF24;">[METRIC] Token Usage: 1,452 Prompt / 328 Completion</div>
+                        <div style="color: #818CF8;">[ACTION] Critic Agent: Confidence 92% -> Validation Passed.</div>
+                        <div style="color: #64748B; margin-top: 15px; border-top: 1px dashed #334155; padding-top: 10px; font-size: 0.75rem;">Listening for traces on port 6006...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Floating Chat Widget -->
@@ -163,7 +244,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <!-- Custom Scripts -->
-    <script src="js/app_v2.js?v=final_demo"></script>
+    <script src="js/app_v2.js?v=final_observability_fixed_v9"></script>
     <script src="js/websocket.js"></script>
 </body>
 </html>

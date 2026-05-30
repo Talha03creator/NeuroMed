@@ -18,15 +18,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_BASE = 'http://localhost:8000/api/v1'; // Assuming default local port
 
     let confidenceChartInstance = null;
+
+    // ── Telemetry Slider Dynamic Updates ─────────────────────────────────────
+    const thresholdSlider = document.getElementById('slider-critic-threshold');
+    const thresholdVal = document.getElementById('critic-threshold-value');
+    if (thresholdSlider && thresholdVal) {
+        thresholdSlider.addEventListener('input', (e) => {
+            thresholdVal.innerText = e.target.value + '%';
+        });
+    }
     
-    // ── Tactical Hackathon Nav Fallback ──────────────────────────────────────
-    document.querySelectorAll('nav a').forEach(link => {
-        if (link.textContent.trim() !== 'Dashboard') {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                alert("Observability & Settings modules are currently in Beta/Enterprise mode. Please view the Agentic Pipeline on the Dashboard.");
-            });
-        }
+    // ── Tactical Hackathon Nav Transitions ───────────────────────────────────
+    const navLinks = document.querySelectorAll('nav a');
+    const obsSection = document.getElementById('observability-section');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (link.classList.contains('active')) return;
+            
+            const targetText = link.textContent.trim();
+            if (targetText === 'Settings') {
+                alert("Settings module is in Beta. Observability telemetry is active under the 'Observability' tab!");
+                return;
+            }
+
+            // Remove active from all links
+            navLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+
+            if (targetText === 'Dashboard') {
+                // Determine which dashboard panel is active
+                const resultsActive = !sections.results.classList.contains('hidden');
+                const loadingActive = !sections.loading.classList.contains('hidden');
+                
+                if (resultsActive) {
+                    transitionSection(obsSection, sections.results);
+                } else if (loadingActive) {
+                    transitionSection(obsSection, sections.loading);
+                } else {
+                    transitionSection(obsSection, sections.upload);
+                }
+            } else if (targetText === 'Observability') {
+                // Determine which dashboard panel is currently visible to hide it
+                let visibleDashboardSection = null;
+                if (!sections.results.classList.contains('hidden')) {
+                    visibleDashboardSection = sections.results;
+                } else if (!sections.loading.classList.contains('hidden')) {
+                    visibleDashboardSection = sections.loading;
+                } else {
+                    visibleDashboardSection = sections.upload;
+                }
+                
+                transitionSection(visibleDashboardSection, obsSection);
+            }
+        });
     });
 
     // ── File Drag & Drop Logic ──────────────────────────────────────────────
@@ -93,10 +139,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 1500);
 
+        // Capture Observability UI elements state
+        const isArizeEnabled = document.getElementById('toggle-arize-tracing')?.checked ?? true;
+        const isCriticEnabled = document.getElementById('toggle-critic-loop')?.checked ?? true;
+        const isFivetranEnabled = document.getElementById('toggle-fivetran-sync')?.checked ?? true;
+        const criticThreshold = document.getElementById('slider-critic-threshold')?.value ?? '85';
+
+        // Update Live Telemetry Terminal dynamically
+        const telemetryConsole = document.getElementById('telemetry-console');
+        if (telemetryConsole) {
+            telemetryConsole.innerHTML += `
+<div style="color: #A855F7; font-weight: bold; margin-top: 15px;">[ACTION] User uploaded "${file.name}" for processing...</div>
+<div style="color: #60A5FA;">[CONFIG] EHR Sync: ${isFivetranEnabled ? "ENABLED" : "DISABLED"} | Critic Healing: ${isCriticEnabled ? "ENABLED (" + criticThreshold + "%)" : "DISABLED"} | Tracing: ${isArizeEnabled ? "ENABLED" : "DISABLED"}</div>
+            `;
+            telemetryConsole.scrollTop = telemetryConsole.scrollHeight;
+        }
+
         // API Call
         const formData = new FormData();
         formData.append("file", file);
-        // formData.append("patient_id", "pt-12345"); // Optional context injection
+        formData.append("is_arize_enabled", isArizeEnabled);
+        formData.append("is_critic_enabled", isCriticEnabled);
+        formData.append("is_fivetran_enabled", isFivetranEnabled);
+        formData.append("critic_threshold", criticThreshold);
 
         try {
             const response = await fetch(`${API_BASE}/reports/analyze`, {

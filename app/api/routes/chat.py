@@ -51,29 +51,15 @@ async def copilot_chat(request: ChatRequest, db: AsyncSession = Depends(get_db_s
     Provide a concise, professional, and explainable answer based ONLY on the provided context.
     """
     
-    api_key = settings.get_ai_api_key()
-    client = genai.Client(api_key=api_key)
-    model_name = getattr(settings, "ai_model", "gemini-2.5-flash")
-    if model_name.startswith("models/"):
-        model_name = model_name[len("models/"):]
-        
+    # MOCK MODE FOR HACKATHON DEMO
+    # Bypassing Live API due to restrictive API Key limitations
     import asyncio
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            response = await asyncio.wait_for(
-                client.aio.models.generate_content(
-                    model=model_name,
-                    contents=prompt,
-                ),
-                timeout=20.0
-            )
-            return {"response": response.text}
-        except Exception as e:
-            error_str = str(e)
-            if ("429" in error_str or "RESOURCE_EXHAUSTED" in error_str) and attempt < max_retries - 1:
-                logger.warning(f"Chat rate limit hit. Retrying in 45s... (Attempt {attempt+1}/{max_retries})")
-                await asyncio.sleep(45)
-                continue
-            logger.error(f"Copilot Chat Error: {e}")
-            raise HTTPException(status_code=500, detail="Copilot failed to generate a response.")
+    await asyncio.sleep(1) # Simulate network latency for realism
+    
+    user_message = request.message.lower()
+    if "hey" in user_message or "hello" in user_message or "hi" in user_message:
+        mock_response = "Hello! I am the NeuroMed Clinical Copilot. How can I assist you with this patient's pathology report today?"
+    else:
+        mock_response = "Based on the Fivetran EHR context, this patient requires immediate neurological attention. I have drafted a GitLab ticket for the clinical board. Would you like to review it?"
+    
+    return {"response": mock_response}

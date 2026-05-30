@@ -68,6 +68,53 @@ async def upload_report(
     - Professional and patient-friendly summaries
     - Confidence score
     """
+    # MOCK MODE FOR HACKATHON DEMO
+    # Returns the exact mock JSON structure requested by the user with list arrays
+    mock_analysis = {
+        "summary": "Patient exhibits severe neurological degradation consistent with advanced Parkinsonian traits. Fivetran historical EHR confirms a contradiction with newly prescribed dopamine antagonists.",
+        "risk_flags": [
+            "High Fall Risk due to motor symptom exacerbation.",
+            "Medication Contradiction identified in Fivetran EHR logs.",
+            "Rapid Neurological Decline over the last 3 months."
+        ],
+        "recommended_steps": [
+            "Initiate Levodopa protocol immediately.",
+            "Schedule emergency Neurology board review.",
+            "Create priority GitLab Escalation Ticket for the clinical team."
+        ]
+    }
+    
+    return JSONResponse(status_code=200, content={
+        "id": "c91f3a32-0a6d-4511-890c-0dd304de55d8",
+        "filename": file.filename,
+        "file_type": "pdf",
+        "status": "completed",
+        "patient_age": "58",
+        "patient_gender": "male",
+        "symptoms": ["Neurological Decline", "Motor Degradation"],
+        "medications": ["Dopamine Antagonists"],
+        "procedures": ["Neurology Board Review"],
+        "lab_values": ["LDL: 160 mg/dL"],
+        "body_parts": ["Brain", "Nervous System"],
+        "clinical_impression": "Severe Neurological Decline",
+        "risk_flags": mock_analysis["risk_flags"],
+        "specialty_classification": "Neurology",
+        "professional_summary": mock_analysis["summary"],
+        "patient_friendly_summary": mock_analysis["summary"],
+        "confidence_score": 0.98,
+        "full_analysis_json": {
+            "analysis": mock_analysis,
+            "recommended_next_steps": mock_analysis["recommended_steps"]
+        },
+        "processing_time_ms": 120.0,
+        "tokens_used": 1500,
+        "cached": False,
+        "error_message": None,
+        "created_at": "2026-05-26T15:22:54Z",
+        "updated_at": "2026-05-26T15:22:54Z",
+        "disclaimer": "This system is for informational purposes only and does not provide medical diagnosis."
+    })
+    
     # ── Validate file type ─────────────────────────────────────────
     if not file.filename:
         raise HTTPException(status_code=400, detail="No filename provided")
